@@ -16,11 +16,8 @@ export const addNodeToGraph = ({ graph, text, type = "null", isEmpty = false }) 
             isEmpty,
             childrenCount: isParent ? 1 : 0,
         },
-        // UI 显示字段
-        position: { x: 10, y: 10 },
         sourcePosition: 'right',
         targetPosition: 'left',
-        label: String(text),
     };
 
     graph.nodes.push(node);

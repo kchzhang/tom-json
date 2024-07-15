@@ -1,6 +1,17 @@
 <script setup>
 import { VueFlow } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
+import { useVueFlow } from '@vue-flow/core'
+import { ref } from 'vue'
+const { nodesDraggable } = useVueFlow()
+const RefVueFlow = ref(null)
+
+// 禁用 node 拖拽
+nodesDraggable.value = false
+
+function fitToView() {
+  // RefVueFlow.value.fitToView()
+}
 
 defineProps({
   nodes: {
@@ -13,47 +24,20 @@ defineProps({
   }
 })
 
-// const nodes = ref([
-//   {
-//     id: '1',
-//     type: 'input',
-//     label: 'Node 1',
-//     position: { x: 250, y: 200 },
-//     sourcePosition: Position.Right,
-//     targetPosition: Position.Left
-//   },
-//   {
-//     id: '2',
-//     label: 'Node 2',
-//     position: { x: 600, y: 100 },
-//     sourcePosition: Position.Right,
-//     targetPosition: Position.Left
-//   },
-//   {
-//     id: '3',
-//     label: 'Node 3',
-//     position: { x: 600, y: 200 },
-//     sourcePosition: Position.Right,
-//     targetPosition: Position.Left
-//   },
-//   {
-//     id: '4',
-//     label: 'Node 4',
-//     position: { x: 600, y: 300 },
-//     sourcePosition: Position.Right,
-//     targetPosition: Position.Left
-//   }
-// ])
-
-// const edges = ref([
-//   { id: 'e1-2', source: '1', target: '2', animated: true },
-//   { id: 'e1-3', source: '1', target: '3' },
-//   { id: 'e1-4', source: '4', target: '1', animated: true }
-// ])
+defineExpose({
+  fitToView
+})
 </script>
 
 <template>
-  <VueFlow :nodes="nodes" :edges="edges">
+  <VueFlow
+    ref="RefVueFlow"
+    :nodes="nodes"
+    :edges="edges"
+    :default-viewport="{ zoom: 1.5 }"
+    :min-zoom="0.2"
+    :max-zoom="4"
+  >
     <Background />
   </VueFlow>
 </template>

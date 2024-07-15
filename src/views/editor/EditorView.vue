@@ -1,11 +1,15 @@
 <script setup>
 import { ref } from 'vue'
 import CustomFlow from '@/components/flow'
+import TopTool from './top-tool'
+import BottomTool from './bottom-tool'
 
 import { parser, elkLayout } from '@/utils'
 
 const nodesList = ref([])
 const edgesList = ref([])
+
+const RefCustomFlow = ref(null)
 
 const content = ref(JSON.stringify({}))
 
@@ -16,20 +20,39 @@ async function init() {
     'elk.direction': 'RIGHT'
   })
 
-  const nodesArr = res.children.map((item) => {
+  function textRender(item) {
+    if (typeof item.text == 'string') {
+      return item.text
+    }
+    if (typeof item.text == 'object') {
+      let txt = ''
+      item.text.map((subItem) => {
+        txt = `${txt}${subItem[0]}:${subItem[1]}\n`
+      })
+      return txt
+    }
+  }
+
+  const nodesArr = res.children.map((item, i) => {
     return {
       id: item.id,
-      label: item.label,
+      label: textRender(item),
       sourcePosition: 'right',
       targetPosition: 'left',
       position: {
         x: item.x,
         y: item.y
+      },
+      type: i == 0 ? 'input' : 'default',
+      width: item.width,
+      style: {
+        'white-space': 'pre'
       }
     }
   })
   nodesList.value = nodesArr
   edgesList.value = edges
+  // RefCustomFlow.value.fitToView()
 }
 
 init()
@@ -40,31 +63,33 @@ function chnageContent() {
 </script>
 
 <template>
-  <div class="container-view">
-    <div class="txt-content">
-      <textarea
-        class="c-input"
-        v-model="content"
-        placeholder="请输入"
-        @input="chnageContent"
-      ></textarea>
+  <div class="flex flex-col h-screen">
+    <!-- 工具栏 -->
+    <TopTool />
+    <!-- 视图 -->
+    <div class="flex flex-row h-screen">
+      <div class="basis-1/4">
+        <textarea
+          class="c-input"
+          v-model="content"
+          placeholder="请输入"
+          @input="chnageContent"
+        ></textarea>
+      </div>
+      <CustomFlow ref="RefCustomFlow" class="basis-3/4" :nodes="nodesList" :edges="edgesList" />
     </div>
-    <CustomFlow :nodes="nodesList" :edges="edgesList" />
+    <!-- 底部工具栏 -->
+    <BottomTool />
   </div>
 </template>
 
 <style scoped>
-.container-view {
-  height: 100vh;
-  display: flex;
-  justify-content: flex-start;
-}
 .txt-content {
   width: 400px;
 }
 .c-input {
   width: 100%;
-  height: 99%;
-  border: 0;
+  height: 100%;
+  border: 1px solid #eeeeee;
 }
 </style>

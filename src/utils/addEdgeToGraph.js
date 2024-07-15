@@ -5,6 +5,7 @@ export const addEdgeToGraph = (graph, from, to) => {
         to: to,
         source: from,
         target: to,
+        animated: true
     };
 
     graph.edges.push(newEdge);
