@@ -5,12 +5,17 @@ import { useVueFlow } from '@vue-flow/core'
 import { ref } from 'vue'
 const { nodesDraggable } = useVueFlow()
 const RefVueFlow = ref(null)
-
+let _vueFlowInstance
 // 禁用 node 拖拽
 nodesDraggable.value = false
 
 function fitToView() {
-  // RefVueFlow.value.fitToView()
+  _vueFlowInstance.setViewport({ x: 0, y: 0, zoom: 1 })
+  _vueFlowInstance.fitView()
+}
+
+function onPaneReady(vueFlowInstance) {
+  _vueFlowInstance = vueFlowInstance
 }
 
 defineProps({
@@ -34,11 +39,12 @@ defineExpose({
     ref="RefVueFlow"
     :nodes="nodes"
     :edges="edges"
-    :default-viewport="{ zoom: 1.5 }"
+    :default-viewport="{ zoom: 1 }"
     :min-zoom="0.2"
     :max-zoom="4"
+    @pane-ready="onPaneReady"
   >
-    <Background />
+    <Background bgColor="#f3f3f3" />
   </VueFlow>
 </template>
 <style>

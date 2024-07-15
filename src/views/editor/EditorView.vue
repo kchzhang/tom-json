@@ -11,7 +11,7 @@ const edgesList = ref([])
 
 const RefCustomFlow = ref(null)
 
-const content = ref(JSON.stringify({}))
+const content = ref(JSON.stringify())
 
 async function init() {
   const { nodes, edges } = parser(content.value)
@@ -43,7 +43,6 @@ async function init() {
         x: item.x,
         y: item.y
       },
-      type: i == 0 ? 'input' : 'default',
       width: item.width,
       style: {
         'white-space': 'pre'
@@ -52,7 +51,7 @@ async function init() {
   })
   nodesList.value = nodesArr
   edgesList.value = edges
-  // RefCustomFlow.value.fitToView()
+  RefCustomFlow.value.fitToView()
 }
 
 init()
