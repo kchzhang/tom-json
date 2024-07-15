@@ -33,7 +33,7 @@ async function init() {
     }
   }
 
-  const nodesArr = res.children.map((item, i) => {
+  const nodesArr = res.children.map((item) => {
     return {
       id: item.id,
       label: textRender(item),
