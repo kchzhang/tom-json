@@ -1,9 +1,54 @@
 <template>
-  <div class="top-tool">顶部工具栏</div>
+  <div class="top-tool">
+    <div class="flex flex-wrap gap-4 items-center">
+      <h1>顶部工具栏</h1>
+      <el-select
+        v-model="viewType"
+        placeholder="Graph"
+        size="small"
+        style="width: 80px"
+        @change="handleChange"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+
+const props = defineProps({
+  isType: {
+    type: Number,
+    required: true,
+    default: 1
+  }
+})
+
+const viewType = ref(props.isType)
+
+const emit = defineEmits(['selectView'])
+
+function handleChange() {
+  emit('selectView', viewType.value)
+}
+
+const options = [
+  {
+    value: 1,
+    label: 'Graph'
+  },
+  {
+    value: 2,
+    label: 'Tree'
+  }
+]
 </script>
 
 

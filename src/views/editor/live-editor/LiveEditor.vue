@@ -4,7 +4,7 @@
 </template>
 
 <script setup>
-import { ref, h, watch } from 'vue'
+import { ref, h, watch, computed } from 'vue'
 import { CustomFlow, CustomItem } from '@/components/flow'
 import { parser, elkLayout } from '@/utils'
 
@@ -14,13 +14,22 @@ const props = defineProps({
     required: true,
     default: ''
   },
-  isGraph: { type: Boolean, required: true, default: true }
+  isType: {
+    type: Number,
+    required: true,
+    default: 1
+  }
 })
 
 const nodesList = ref([])
 const edgesList = ref([])
 
 const RefCustomFlow = ref(null)
+
+// 是否图形
+const isGraph = computed(() => {
+  return props.isType === 1
+})
 
 watch(
   () => props.jsonContent,

@@ -43,15 +43,19 @@ const content = ref(
   })
 )
 
-const isGraph = ref(true)
+// 1.isGraph 2.Tree
+const isViewType = ref(1)
 
 function changeContent() {}
+function selectView(val) {
+  isViewType.value = val
+}
 </script>
 
 <template>
   <div class="flex flex-col h-screen">
     <!-- 工具栏 -->
-    <TopTool />
+    <TopTool @selectView="selectView" />
     <!-- 视图 -->
     <PageSplit
       :distribute="0.2"
@@ -71,7 +75,7 @@ function changeContent() {}
         ></textarea>
       </template>
       <template v-slot:second>
-        <LiveEditor :isGraph="isGraph" :jsonContent="content" />
+        <LiveEditor :isType="isViewType" :jsonContent="content" />
       </template>
     </PageSplit>
     <!-- 底部工具栏 -->
