@@ -52,6 +52,7 @@ const dataTypeClass = computed(() => {
 const dataTypeArrClass = computed(() => {
   const node = props.data
   return {
+    'is-base': true,
     'is-arr': isArray(node.data.type)
   }
 })
@@ -116,15 +117,18 @@ function handleUpdate() {
 .is-boolean-f {
   color: #ff0000;
 }
-.is-arr {
+.is-base {
   display: block;
   flex: 1 1 0%;
-  color: #ff6b00;
-  font-size: 14px;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.is-arr {
+  color: #ff6b00;
   padding-right: 24px;
+  font-size: 14px;
 }
 .icon-show {
   position: absolute;
