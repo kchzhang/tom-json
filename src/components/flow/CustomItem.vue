@@ -3,9 +3,6 @@ import { ref, computed } from 'vue'
 import CustomKey from './CustomKey.vue'
 import IconShow from './IconShow.vue'
 import IconHidden from './IconHidden.vue'
-import { useVueFlow } from '@vue-flow/core'
-
-const { updateNode } = useVueFlow()
 
 const props = defineProps({
   id: {
@@ -72,13 +69,11 @@ const isShowCloseIcon = computed(() => {
 })
 
 function toggle() {
-  // 更新数据
   handleUpdate()
 }
 
 function handleUpdate() {
   hidden.value = !hidden.value
-  updateNode(props.id, { hidden: hidden.value })
 }
 </script>
 

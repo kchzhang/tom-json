@@ -45,7 +45,7 @@ defineExpose({
     :max-zoom="4"
     @pane-ready="onPaneReady"
   >
-    <Background bgColor="#f3f3f3" />
+    <Background />
   </VueFlow>
 </template>
 <style>
