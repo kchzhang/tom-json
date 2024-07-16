@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-import CustomFlow from '@/components/flow'
+import { ref, h } from 'vue'
+import { CustomFlow, CustomItem } from '@/components/flow'
 import TopTool from './top-tool'
 import BottomTool from './bottom-tool'
 
@@ -20,23 +20,10 @@ async function init() {
     'elk.direction': 'RIGHT'
   })
 
-  function textRender(item) {
-    if (typeof item.text == 'string') {
-      return item.text
-    }
-    if (typeof item.text == 'object') {
-      let txt = ''
-      item.text.map((subItem) => {
-        txt = `${txt}${subItem[0]}:${subItem[1]}\n`
-      })
-      return txt
-    }
-  }
-
   const nodesArr = res.children.map((item) => {
     return {
       id: item.id,
-      label: textRender(item),
+      label: h(CustomItem, { id: item.id, data: item }),
       sourcePosition: 'right',
       targetPosition: 'left',
       position: {
@@ -45,10 +32,13 @@ async function init() {
       },
       width: item.width,
       style: {
-        'white-space': 'pre'
-      }
+        'white-space': 'pre',
+        backgroundColor: '#eeeeee'
+      },
+      hidden: false
     }
   })
+
   nodesList.value = nodesArr
   edgesList.value = edges
   RefCustomFlow.value.fitToView()

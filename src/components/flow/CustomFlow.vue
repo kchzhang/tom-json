@@ -3,6 +3,7 @@ import { VueFlow } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { useVueFlow } from '@vue-flow/core'
 import { ref } from 'vue'
+
 const { nodesDraggable } = useVueFlow()
 const RefVueFlow = ref(null)
 let _vueFlowInstance
