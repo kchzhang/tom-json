@@ -16,7 +16,7 @@
           class="c-input"
           @input="changeContent"
           type="textarea"
-          autosize
+          :autosize="{ minRows: 10, maxRows: 40 }"
         />
       </el-scrollbar>
     </template>
