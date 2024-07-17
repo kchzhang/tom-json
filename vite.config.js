@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
-  base: '/tom-json',
+  base: '/tom-json/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
