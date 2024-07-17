@@ -1,7 +1,7 @@
 <template>
   <div class="top-tool">
     <div class="flex flex-wrap gap-4 items-center">
-      <h1>顶部工具栏</h1>
+      <h1>TOM JSON</h1>
       <el-select
         v-model="viewType"
         placeholder="Graph"
@@ -63,7 +63,7 @@ const options = [
   height: 40px;
   padding: 4px 8px;
   background: rgb(236, 236, 236);
-  color: rgb(185, 187, 190);
+  color: rgb(5, 39, 90);
   z-index: 36;
   border-bottom: 1px solid rgb(204, 204, 204);
 }
