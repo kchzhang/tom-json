@@ -17,9 +17,8 @@ jobs:
           node-version: '20' # 或者你使用的 Node.js 版本
       - name: Build project
         run: |
-          npm install -g yarn
-          yarn install
-          mpm run build
+          npm install
+          npm run build
           rm -rf docs
           mkdir docs
           cp -rf dist/* docs
