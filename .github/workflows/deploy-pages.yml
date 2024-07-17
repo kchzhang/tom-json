@@ -20,11 +20,8 @@ jobs:
           npm install -g yarn
           yarn install
           npm run build
-          rm -rf docs
-          mkdir docs
-          cp -rf dist/* docs
       - name: Deploy to GitHub Pages
-        # uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./dist
