@@ -1,10 +1,24 @@
 <template>
-  <div class="bottom-tool">底部工具栏</div>
+  <div class="bottom-tool">
+    <div class="flex flex-wrap gap-4 items-center cursor-pointer">
+      <IconExpand @click="toogle" />
+    </div>
+  </div>
 </template>
 
 <script setup>
-</script>
+import { ref } from 'vue'
+import { IconExpand } from '@/components/icons'
 
+const emit = defineEmits(['toogle'])
+
+const isExpand = ref(true)
+
+function toogle() {
+  isExpand.value = !isExpand.value
+  emit('toogle', isExpand.value)
+}
+</script>
 
 <style scoped>
 .bottom-tool {

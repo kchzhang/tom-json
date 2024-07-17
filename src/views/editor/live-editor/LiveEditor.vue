@@ -1,14 +1,14 @@
 <template>
   <PageSplit
-    :distribute="0.2"
+    :distribute="distribute"
     :lineThickness="2"
     :isVertical="true"
-    :firstMinValue="200"
+    :firstMinValue="firstMinValue"
     :secondMinValue="200"
     :hasLineTip="false"
     class="page-split"
   >
-    <template v-slot:first>
+    <template v-slot:first v-if="isExpand">
       <!-- todo 替换成 code 编辑器 -->
       <el-scrollbar>
         <ElInput
@@ -40,6 +40,11 @@ const props = defineProps({
     type: Number,
     required: true,
     default: 1
+  },
+  isExpand: {
+    type: Boolean,
+    required: true,
+    default: true
   }
 })
 
@@ -47,6 +52,14 @@ const RefCustomFlow = ref(null)
 // 是否图形
 const isGraph = computed(() => {
   return props.viewType === 1
+})
+
+const distribute = computed(() => {
+  return props.isExpand ? 0.2 : 0
+})
+
+const firstMinValue = computed(() => {
+  return props.isExpand ? 200 : 0
 })
 
 const treeData = computed(() => {
@@ -61,41 +74,7 @@ const treeData = computed(() => {
 
 const nodesList = ref([])
 const edgesList = ref([])
-const content = ref(
-  JSON.stringify({
-    squadName: 'Super he111111111111',
-    homeTown: 'Metro City',
-    formed: null,
-    secretBase: 'Super tower',
-    active: false,
-    members: [
-      {
-        name: 'Molecule Man',
-        age: 29,
-        secretIdentity: 'Dan Jukes',
-        powers: ['Radiation resistance', 'Turning tiny', 'Radiation blast']
-      },
-      {
-        name: 'Madame Uppercut',
-        age: 39,
-        secretIdentity: 'Jane Wilson',
-        powers: ['Million tonne punch', 'Damage resistance', 'Superhuman reflexes']
-      },
-      {
-        name: 'Eternal Flame',
-        age: 1000000,
-        secretIdentity: 'Unknown',
-        powers: [
-          'Immortality',
-          'Heat Immunity',
-          'Inferno',
-          'Teleportation',
-          'Interdimensional travel'
-        ]
-      }
-    ]
-  })
-)
+const content = ref(JSON.stringify())
 
 async function init() {
   const { nodes, edges } = parser(content.value)
