@@ -1,27 +1,26 @@
-name: Deploy to GitHub Pages
+name: GitHub Pages
 
 on:
   push:
     branches:
-      - master # 或者是你的默认分支名称
+      - master # 设置触发工作流的分支，这里是main分支
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@master
         with:
-          node-version: '20' # 或者你使用的 Node.js 版本
-      - name: Build project
+          submodules: true # 获取所有子模块
+
+      - name: Build the site
         run: |
           npm install -g yarn
           yarn install
-          npm run build
-      - name: Deploy to GitHub Pages
+          npm run build  # 使用npm构建你的网站
+      - name: Deploy the site
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          github_token: ${{ secrets.GITHUB_TOKEN }} # 使用GITHUB_TOKUTN环境变量
+          publish_dir: ./dist # 指定要部署的目录
