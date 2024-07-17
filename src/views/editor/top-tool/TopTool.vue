@@ -24,14 +24,14 @@
 import { ref } from 'vue'
 
 const props = defineProps({
-  isType: {
+  viewType: {
     type: Number,
     required: true,
     default: 1
   }
 })
 
-const viewType = ref(props.isType)
+const viewType = ref(props.viewType)
 
 const emit = defineEmits(['selectView'])
 
