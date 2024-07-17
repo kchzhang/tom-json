@@ -35,6 +35,9 @@ function isNull(val) {
 function isArray(val) {
   return val === 'array'
 }
+function isObject(val) {
+  return val === 'object'
+}
 
 const dataTypeClass = computed(() => {
   return (value) => {
@@ -53,7 +56,8 @@ const dataTypeArrClass = computed(() => {
   const node = props.data
   return {
     'is-base': true,
-    'is-arr': isArray(node.data.type)
+    'is-arr': isArray(node.data.type),
+    'is-object': isObject(node.data.type)
   }
 })
 
@@ -129,6 +133,9 @@ function handleUpdate() {
   color: #ff6b00;
   padding-right: 24px;
   font-size: 14px;
+}
+.is-object {
+  color: #761cea;
 }
 .icon-show {
   position: absolute;
