@@ -6,13 +6,21 @@ on:
       - master # 或者是你的默认分支名称
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Build and Deploy
-        uses: JamesIves/github-pages-deploy-action@4.1.4
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: public # The folder the action should deploy from.
+          node-version: '20' # 或者你使用的 Node.js 版本
+      - name: Build project
+        run: |
+          npm install
+          npm run build
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
