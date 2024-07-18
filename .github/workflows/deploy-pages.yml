@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout # 第一步：获取源码
         uses: actions/checkout@v3 # 使用的工具
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
       - name: Install and Build # 第二步：下载依赖和构建
         run: |
