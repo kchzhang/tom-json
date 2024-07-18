@@ -74,7 +74,19 @@ const treeData = computed(() => {
 
 const nodesList = ref([])
 const edgesList = ref([])
-const content = ref(JSON.stringify())
+const content = ref(
+  JSON.stringify(
+    {
+      name: 'TOM JSON',
+      age: 1,
+      friend: 'Jerry',
+      like: ['apple', 'banana', 'orange'],
+      isMarried: false
+    },
+    null,
+    2
+  )
+)
 
 async function init() {
   const { nodes, edges } = parser(content.value)
@@ -93,7 +105,7 @@ async function init() {
         x: item.x,
         y: item.y
       },
-      width: item.width > 200 ? item.width : 200,
+      width: item.width > 150 ? item.width : 150,
       style: {
         'white-space': 'pre',
         backgroundColor: '#f6f8fa'
