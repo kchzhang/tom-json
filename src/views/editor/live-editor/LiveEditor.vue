@@ -10,15 +10,13 @@
   >
     <template v-slot:first v-if="isExpand">
       <!-- todo 替换成 code 编辑器 -->
-      <el-scrollbar>
-        <ElInput
-          v-model="content"
-          class="c-input"
-          @input="changeContent"
-          type="textarea"
-          :autosize="{ minRows: 10, maxRows: 40 }"
-        />
-      </el-scrollbar>
+      <ElInput
+        v-model="content"
+        class="c-input"
+        @input="changeContent"
+        type="textarea"
+        :autosize="{ minRows: 10, maxRows: 40 }"
+      />
     </template>
     <template v-slot:second>
       <CustomFlow v-if="isGraph" ref="RefCustomFlow" :nodes="nodesList" :edges="edgesList" />
@@ -125,13 +123,39 @@ function changeContent() {
 init()
 </script>
 
-<style scoped>
+<style>
 .c-input {
   width: 100%;
-  height: 99%;
+  /* height: 100vh; */
   border: 1px solid #eeeeee;
+}
+.c-input textarea {
+  height: calc(100vh - 65px) !important;
+  min-height: inherit;
 }
 .page-split {
   overflow: hidden;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0003;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background-color: #0000004d;
 }
 </style>
