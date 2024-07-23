@@ -2,6 +2,7 @@
   <div class="bottom-tool">
     <div class="flex flex-wrap gap-4 items-center cursor-pointer">
       <IconExpand @click="toogle" />
+      <NodePath :path="path" v-if="path" />
     </div>
   </div>
 </template>
@@ -9,6 +10,14 @@
 <script setup>
 import { ref } from 'vue'
 import { IconExpand } from '@/components/icons'
+import NodePath from './NodePath.vue'
+
+defineProps({
+  path: {
+    type: String,
+    default: ''
+  }
+})
 
 const emit = defineEmits(['toogle'])
 

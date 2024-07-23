@@ -9,11 +9,23 @@ defineProps({
     default: () => {}
   }
 })
+
+const emit = defineEmits(['nodeClick'])
+
+function nodeClick(node) {
+  emit('nodeClick', node)
+}
 </script>
 
 <template>
   <el-scrollbar>
-    <vue-json-pretty class="custom-tree" :data="data" :showIcon="true" :showLineNumber="true" />
+    <vue-json-pretty
+      class="custom-tree"
+      :data="data"
+      :showIcon="true"
+      :showLineNumber="true"
+      @nodeClick="nodeClick"
+    />
   </el-scrollbar>
 </template>
 

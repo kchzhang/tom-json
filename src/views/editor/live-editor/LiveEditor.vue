@@ -20,7 +20,7 @@
     </template>
     <template v-slot:second>
       <CustomFlow v-if="isGraph" ref="RefCustomFlow" :nodes="nodesList" :edges="edgesList" />
-      <CustomTree v-else :data="treeData" />
+      <CustomTree v-else :data="treeData" @nodeClick="nodeClick" />
     </template>
   </PageSplit>
 </template>
@@ -32,6 +32,8 @@ import { CustomTree } from '@/components/tree'
 import PageSplit from 'vue3-page-split'
 import { parser, elkLayout } from '@/utils'
 import 'vue3-page-split/dist/style.css'
+
+const emit = defineEmits(['nodeClick'])
 
 const props = defineProps({
   viewType: {
@@ -120,6 +122,11 @@ async function init() {
 function changeContent() {
   init()
 }
+
+function nodeClick(node) {
+  emit('nodeClick', node)
+}
+
 init()
 </script>
 
