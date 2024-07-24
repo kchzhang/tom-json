@@ -2,6 +2,7 @@
   <div class="bottom-tool">
     <div class="flex flex-wrap gap-4 items-center cursor-pointer">
       <IconExpand @click="toogle" />
+      <IconBeautify title="美化" @click="handleBeautify" />
       <NodePath :path="path" v-if="path" />
     </div>
   </div>
@@ -9,7 +10,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { IconExpand } from '@/components/icons'
+import { IconExpand, IconBeautify } from '@/components/icons'
 import NodePath from './NodePath.vue'
 
 defineProps({
@@ -26,6 +27,10 @@ const isExpand = ref(true)
 function toogle() {
   isExpand.value = !isExpand.value
   emit('toogle', isExpand.value)
+}
+
+function handleBeautify() {
+  emit('handleBeautify')
 }
 </script>
 

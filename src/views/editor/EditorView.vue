@@ -10,6 +10,7 @@ const viewType = ref(1)
 const isExpand = ref(true)
 
 const path = ref('')
+const RefLiveEditor = ref(null)
 
 function selectView(val) {
   viewType.value = val
@@ -23,6 +24,10 @@ function nodeClick(node) {
   const rawNode = toRaw(node)
   path.value = rawNode.path
 }
+
+function handleBeautify() {
+  RefLiveEditor.value.handleBeautify()
+}
 </script>
 
 <template>
@@ -30,9 +35,14 @@ function nodeClick(node) {
     <!-- 工具栏 -->
     <TopTool @selectView="selectView" :viewType="viewType" />
     <!-- 视图 -->
-    <LiveEditor :viewType="viewType" :isExpand="isExpand" @nodeClick="nodeClick" />
+    <LiveEditor
+      ref="RefLiveEditor"
+      :viewType="viewType"
+      :isExpand="isExpand"
+      @nodeClick="nodeClick"
+    />
     <!-- 底部工具栏 -->
-    <BottomTool @toogle="toogle" :path="path" />
+    <BottomTool @toogle="toogle" :path="path" @handleBeautify="handleBeautify" />
   </div>
 </template>
 

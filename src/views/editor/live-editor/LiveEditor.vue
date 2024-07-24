@@ -35,6 +35,10 @@ import 'vue3-page-split/dist/style.css'
 
 const emit = defineEmits(['nodeClick'])
 
+defineExpose({
+  handleBeautify
+})
+
 const props = defineProps({
   viewType: {
     type: Number,
@@ -125,6 +129,10 @@ function changeContent() {
 
 function nodeClick(node) {
   emit('nodeClick', node)
+}
+
+function handleBeautify() {
+  content.value = JSON.stringify(JSON.parse(content.value), null, 4)
 }
 
 init()
