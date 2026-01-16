@@ -29,7 +29,7 @@ import { ref, h, computed } from 'vue'
 import { CustomFlow, CustomItem } from '@/components/flow'
 import { CustomTree } from '@/components/tree'
 import PageSplit from 'vue3-page-split'
-import { parser, elkLayout, isPropertiesFormat, propertiesToJson } from '@/utils'
+import { parser, elkLayout, isPropertiesFormat, propertiesToJson, isYamlFormat, yamlToJson } from '@/utils'
 import MonacoEditor from '@/components/editors/MonacoEditor.vue'
 import 'vue3-page-split/dist/style.css'
 
@@ -73,14 +73,21 @@ const editorHeight = computed(() => {
 
 // 检测当前格式
 const editorLanguage = computed(() => {
-  return isPropertiesFormat(content.value) ? 'properties' : 'json'
+  if (isYamlFormat(content.value)) {
+    return 'yaml'
+  } else if (isPropertiesFormat(content.value)) {
+    return 'properties'
+  }
+  return 'json'
 })
 
 const treeData = computed(() => {
   let json = {}
   try {
     const contentStr = content.value
-    if (isPropertiesFormat(contentStr)) {
+    if (isYamlFormat(contentStr)) {
+      json = yamlToJson(contentStr)
+    } else if (isPropertiesFormat(contentStr)) {
       json = propertiesToJson(contentStr)
     } else {
       json = JSON.parse(contentStr)
@@ -109,14 +116,41 @@ const content = ref(
 
 async function init() {
   let contentToParse = content.value
-  
-  // 如果是 properties 格式，先转换为 JSON 并包装在 root 对象中
-  if (isPropertiesFormat(content.value)) {
-    const jsonObj = propertiesToJson(content.value)
+
+  // 如果是 yaml 或 properties 格式，先转换为 JSON
+  if (isYamlFormat(content.value)) {
+    const jsonObj = yamlToJson(content.value)
+    // YAML 格式：包装在 root 对象中，确保层级结构清晰
     const wrappedJson = { root: jsonObj }
     contentToParse = JSON.stringify(wrappedJson, null, 2)
+  } else if (isPropertiesFormat(content.value)) {
+    const jsonObj = propertiesToJson(content.value)
+    // Properties 格式：包装在 root 对象中，确保层级结构清晰
+    const wrappedJson = { root: jsonObj }
+    contentToParse = JSON.stringify(wrappedJson, null, 2)
+  } else {
+    // JSON 格式，直接使用（如果是多个顶层属性，也需要包装）
+    const parsed = JSON.parse(content.value)
+    // 检查 JSON 是否有多个顶层属性，如果是，也需要包装在 root 中
+    if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+      const keys = Object.keys(parsed)
+      if (keys.length > 1) {
+        // 多个顶层属性，包装在 root 中以保持层级清晰
+        const wrappedJson = { root: parsed }
+        contentToParse = JSON.stringify(wrappedJson, null, 2)
+      } else {
+        // 单个顶层属性，直接使用
+        contentToParse = content.value
+      }
+    } else if (Array.isArray(parsed)) {
+      // 顶层是数组，包装在 root 中
+      const wrappedJson = { root: parsed }
+      contentToParse = JSON.stringify(wrappedJson, null, 2)
+    } else {
+      contentToParse = content.value
+    }
   }
-  
+
   const { nodes, edges } = parser(contentToParse)
   const res = await elkLayout(nodes, edges, {
     // 方向
@@ -157,7 +191,12 @@ function nodeClick(node) {
 
 function handleBeautify() {
   try {
-    if (isPropertiesFormat(content.value)) {
+    if (isYamlFormat(content.value)) {
+      // YAML 格式：转换为 JSON 格式化
+      const jsonObj = yamlToJson(content.value)
+      const formattedJson = JSON.stringify(jsonObj, null, 2)
+      content.value = formattedJson
+    } else if (isPropertiesFormat(content.value)) {
       // Properties 格式：转换为 JSON 格式化
       const jsonObj = propertiesToJson(content.value)
       const formattedJson = JSON.stringify(jsonObj, null, 2)

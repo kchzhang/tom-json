@@ -17,9 +17,9 @@ const props = defineProps({
   }
 })
 
-// Monaco Editor 可能不支持 properties 语言，将其映射到 text
+// Monaco Editor 可能不支持 properties 和 yaml 语言，将其映射到 plaintext
 const mappedLanguage = computed(() => {
-  if (props.language === 'properties') {
+  if (props.language === 'properties' || props.language === 'yaml') {
     return 'plaintext'
   }
   return props.language

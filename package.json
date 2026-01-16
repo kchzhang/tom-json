@@ -15,6 +15,7 @@
     "@vue-flow/core": "^1.38.5",
     "element-plus": "^2.7.7",
     "elkjs": "^0.9.3",
+    "js-yaml": "^4.1.1",
     "jsonc-parser": "^3.3.1",
     "monaco-editor": "^0.50.0",
     "p-cancelable": "^4.0.1",

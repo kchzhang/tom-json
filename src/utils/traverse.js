@@ -35,6 +35,7 @@ function handleNoChildren(value, states, graph, myParentId, parentType, nextType
         }
     }
 
+    // 设置父节点名称，用于创建容器节点
     if (nextType && parentType !== "array" && (nextType === "object" || nextType === "array")) {
         states.parentName = value;
     }
@@ -91,31 +92,30 @@ function handleHasChildren(type, states, graph, children, myParentId, parentType
         // 为数组和对象创建显式的容器节点，数组显示为 "key[]"，对象显示为 "key{}"
         const nodeType = type;
         let nodeText = states.parentName;
-        
+
         if (type === "array") {
             nodeText = `${states.parentName}[]`;
         } else if (type === "object") {
             nodeText = `${states.parentName}{}`;
         }
-        
+
         parentId = addNodeToGraph({ graph, type: nodeType, text: nodeText });
         states.bracketOpen.push({ id: parentId, type });
         states.parentName = "";
 
+        // 确保节点正确连接到其父节点
         const brothersProps = states.brothersNodeProps.filter(
             e =>
                 e.parentId === myParentId &&
                 e.objectsFromArrayId === states.objectsFromArray[states.objectsFromArray.length - 1]
         );
 
-        if (
-            (brothersProps.length > 0 &&
-                states.bracketOpen[states.bracketOpen.length - 2]?.type !== "object") ||
-            (brothersProps.length > 0 && states.bracketOpen.length === 1)
-        ) {
-            addEdgeToGraph(graph, brothersProps[brothersProps.length - 1].id, parentId);
-        } else if (myParentId) {
+        // 修复连接逻辑：确保新节点连接到正确的父节点
+        if (myParentId) {
             addEdgeToGraph(graph, myParentId, parentId);
+        } else if (brothersProps.length > 0 && states.bracketOpen.length === 1) {
+            // 如果有兄弟节点，连接到最后一个兄弟节点
+            addEdgeToGraph(graph, brothersProps[brothersProps.length - 1].id, parentId);
         } else {
             states.notHaveParent.push(parentId);
         }

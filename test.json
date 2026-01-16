@@ -1,0 +1,10 @@
+{
+  "root": {
+    "name": "TOM",
+    "user": {
+      "name": "Jerry",
+      "age": 25
+    },
+    "tags": ["javascript", "vue", "json"]
+  }
+}
