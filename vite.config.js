@@ -13,5 +13,24 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  optimizeDeps: {
+    include: [
+      '@monaco-editor/loader'
+    ]
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          monaco: ['monaco-editor']
+        }
+      }
+    }
+  },
+  server: {
+    fs: {
+      strict: false
+    }
   }
 })

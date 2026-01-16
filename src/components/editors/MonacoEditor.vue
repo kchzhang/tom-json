@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, watch, computed, defineProps, defineEmits } from 'vue'
+import { ref, onMounted, watch, computed, defineProps, defineEmits, onBeforeUnmount } from 'vue'
 import * as monaco from 'monaco-editor'
+import loader from '@monaco-editor/loader'
 
 const props = defineProps({
   modelValue: {
@@ -29,32 +30,44 @@ const emit = defineEmits(['update:modelValue', 'change'])
 
 const container = ref(null)
 let editor = null
+let monacoInstance = null
 
-onMounted(() => {
-  editor = monaco.editor.create(container.value, {
-    value: props.modelValue,
-    language: mappedLanguage.value,
-    theme: 'vs',
-    minimap: { enabled: false },
-    automaticLayout: true,
-    fontSize: 14,
-    lineNumbers: 'on',
-    scrollBeyondLastLine: false,
-    wordWrap: 'on',
-    formatOnPaste: true,
-    formatOnType: true
-  })
+onMounted(async () => {
+  try {
+    monacoInstance = await loader.init()
+    editor = monacoInstance.editor.create(container.value, {
+      value: props.modelValue,
+      language: mappedLanguage.value,
+      theme: 'vs',
+      minimap: { enabled: false },
+      automaticLayout: true,
+      fontSize: 14,
+      lineNumbers: 'on',
+      scrollBeyondLastLine: false,
+      wordWrap: 'on',
+      formatOnPaste: true,
+      formatOnType: true
+    })
 
-  editor.onDidChangeModelContent(() => {
-    const value = editor.getValue()
-    emit('update:modelValue', value)
-    emit('change', value)
-  })
+    editor.onDidChangeModelContent(() => {
+      const value = editor.getValue()
+      emit('update:modelValue', value)
+      emit('change', value)
+    })
+  } catch (error) {
+    console.error('Monaco Editor 加载失败:', error)
+  }
 })
 
 watch(() => props.modelValue, (newValue) => {
   if (editor && newValue !== editor.getValue()) {
     editor.setValue(newValue)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (editor) {
+    editor.dispose()
   }
 })
 

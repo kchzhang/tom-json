@@ -31,7 +31,7 @@ import PCancelable from 'p-cancelable';
  */
 const defaultLayoutOptions = {
     /**
-     * Hints for where node labels are to be placed; if empty, the node label’s position is not modified.
+     * Hints for where node labels are to be placed; if empty, the node label's position is not modified.
      *
      * @see https://www.eclipse.org/elk/reference/options/org-eclipse-elk-nodeLabels-placement.html
      */
@@ -42,7 +42,7 @@ const defaultLayoutOptions = {
      *
      * Uses "layered" strategy.
      * It emphasizes the direction of edges by pointing as many edges as possible into the same direction.
-     * The nodes are arranged in layers, which are sometimes called “hierarchies”,
+     * The nodes are arranged in layers, which are sometimes called "hierarchies",
      * and then reordered such that the number of edge crossings is minimized.
      * Afterwards, concrete coordinates are computed for the nodes and edge bend points.
      *
@@ -97,8 +97,8 @@ const defaultLayoutOptions = {
     'elk.layered.unnecessaryBendpoints': 'true',
 
     /**
-     * The spacing to be preserved between nodes and edges that are routed next to the node’s layer.
-     * For the spacing between nodes and edges that cross the node’s layer ‘spacing.edgeNode’ is used.
+     * The spacing to be preserved between nodes and edges that are routed next to the node's layer.
+     * For the spacing between nodes and edges that cross the node's layer 'spacing.edgeNode' is used.
      *
      * @see https://www.eclipse.org/elk/reference/options/org-eclipse-elk-layered-spacing-edgeNodeBetweenLayers.html
      */
@@ -126,7 +126,7 @@ const defaultLayoutOptions = {
     /**
      * Whether this node allows to route self loops inside of it instead of around it.
      *
-     * If set to true, this will make the node a compound node if it isn’t already,
+     * If set to true, this will make the node a compound node if it isn't already,
      * and will require the layout algorithm to support compound nodes with hierarchical ports.
      *
      * @see https://www.eclipse.org/elk/reference/options/org-eclipse-elk-insideSelfLoops-activate.html
@@ -142,7 +142,7 @@ const defaultLayoutOptions = {
 
     /**
      * Spacing to be preserved between pairs of connected components.
-     * This option is only relevant if ‘separateConnectedComponents’ is activated.
+     * This option is only relevant if 'separateConnectedComponents' is activated.
      *
      * @see https://www.eclipse.org/elk/reference/options/org-eclipse-elk-spacing-componentComponent.html
      */
@@ -150,8 +150,8 @@ const defaultLayoutOptions = {
 
     /**
      * TODO: Should be spacing.baseValue?
-     * An optional base value for all other layout options of the ‘spacing’ group.
-     * It can be used to conveniently alter the overall ‘spaciousness’ of the drawing.
+     * An optional base value for all other layout options of the 'spacing' group.
+     * It can be used to conveniently alter the overall 'spaciousness' of the drawing.
      * Whenever an explicit value is set for the other layout options, this base value will have no effect.
      * The base value is not inherited, i.e. it must be set for each hierarchical node.
      *
@@ -160,8 +160,16 @@ const defaultLayoutOptions = {
     spacing: '75',
 
     /**
+     * The spacing to be preserved between any pair of nodes.
+     * This option sets the minimum spacing between nodes in the same layer.
+     *
+     * @see https://www.eclipse.org/elk/reference/options/org-eclipse-elk-spacing-nodeNode.html
+     */
+    'spacing.nodeNode': '30',
+
+    /**
      * The spacing to be preserved between any pair of nodes of two adjacent layers.
-     * Note that ‘spacing.nodeNode’ is used for the spacing between nodes within the layer itself.
+     * Note that 'spacing.nodeNode' is used for the spacing between nodes within the layer itself.
      *
      * @see https://www.eclipse.org/elk/reference/options/org-eclipse-elk-layered-spacing-nodeNodeBetweenLayers.html
      */

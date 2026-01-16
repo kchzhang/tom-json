@@ -72,6 +72,16 @@ export const calculateNodeSize = (text, isParent = false) => {
     if (isParent) sizes.width += 100;
     if (sizes.width > 700) sizes.width = 700;
 
+    // 检测是否是空对象或空数组（文本以 {} 或 [] 结尾）
+    const isEmptyContainer = typeof text === "string" &&
+        (text.endsWith("{}") || text.endsWith("[]"));
+
+    // 为空对象/数组设置更大的最小尺寸，防止互相遮挡
+    if (isEmptyContainer) {
+        sizes.width = Math.max(sizes.width, 180);
+        sizes.height = Math.max(sizes.height, 45);
+    }
+
     sizeCache.set(cacheKey, sizes);
     return sizes;
 };
