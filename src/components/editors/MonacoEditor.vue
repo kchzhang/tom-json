@@ -1,34 +1,66 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, defineProps, defineEmits } from 'vue'
 import * as monaco from 'monaco-editor'
 
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: ''
+  },
+  language: {
+    type: String,
+    default: 'json'
+  },
+  height: {
+    type: String,
+    default: '100%'
+  }
+})
+
+const emit = defineEmits(['update:modelValue', 'change'])
+
 const container = ref(null)
+let editor = null
+
 onMounted(() => {
-  monaco.editor.create(container.value, {
-    value: ['function x() {', '\tconsole.log("Hello world!");', '}'].join('\n'),
-    language: 'sql'
+  editor = monaco.editor.create(container.value, {
+    value: props.modelValue,
+    language: props.language,
+    theme: 'vs',
+    minimap: { enabled: false },
+    automaticLayout: true,
+    fontSize: 14,
+    lineNumbers: 'on',
+    scrollBeyondLastLine: false,
+    wordWrap: 'on',
+    formatOnPaste: true,
+    formatOnType: true
   })
 
-  self.MonacoEnvironment = {
-    getWorkerUrl: function (moduleId, label) {
-      if (label === 'json') {
-        return './json.worker.bundle.js'
-      }
-      if (label === 'css' || label === 'scss' || label === 'less') {
-        return './css.worker.bundle.js'
-      }
-      if (label === 'html' || label === 'handlebars' || label === 'razor') {
-        return './html.worker.bundle.js'
-      }
-      if (label === 'typescript' || label === 'javascript') {
-        return './ts.worker.bundle.js'
-      }
-      return './editor.worker.bundle.js'
-    }
+  editor.onDidChangeModelContent(() => {
+    const value = editor.getValue()
+    emit('update:modelValue', value)
+    emit('change', value)
+  })
+})
+
+watch(() => props.modelValue, (newValue) => {
+  if (editor && newValue !== editor.getValue()) {
+    editor.setValue(newValue)
   }
+})
+
+function format() {
+  if (editor) {
+    editor.getAction('editor.action.formatDocument').run()
+  }
+}
+
+defineExpose({
+  format
 })
 </script>
 
 <template>
-  <div ref="container" style="height: 500px"></div>
+  <div ref="container" :style="{ height }"></div>
 </template>

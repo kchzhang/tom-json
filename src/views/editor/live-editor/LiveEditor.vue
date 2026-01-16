@@ -9,13 +9,12 @@
     class="page-split"
   >
     <template v-slot:first v-if="isExpand">
-      <!-- todo 替换成 code 编辑器 -->
-      <ElInput
+      <MonacoEditor
+        ref="RefMonacoEditor"
         v-model="content"
-        class="c-input"
-        @input="changeContent"
-        type="textarea"
-        :autosize="{ minRows: 10, maxRows: 40 }"
+        language="json"
+        :height="editorHeight"
+        @change="changeContent"
       />
     </template>
     <template v-slot:second>
@@ -31,6 +30,7 @@ import { CustomFlow, CustomItem } from '@/components/flow'
 import { CustomTree } from '@/components/tree'
 import PageSplit from 'vue3-page-split'
 import { parser, elkLayout } from '@/utils'
+import MonacoEditor from '@/components/editors/MonacoEditor.vue'
 import 'vue3-page-split/dist/style.css'
 
 const emit = defineEmits(['nodeClick'])
@@ -53,6 +53,7 @@ const props = defineProps({
 })
 
 const RefCustomFlow = ref(null)
+const RefMonacoEditor = ref(null)
 // 是否图形
 const isGraph = computed(() => {
   return props.viewType === 1
@@ -64,6 +65,10 @@ const distribute = computed(() => {
 
 const firstMinValue = computed(() => {
   return props.isExpand ? 200 : 0
+})
+
+const editorHeight = computed(() => {
+  return props.isExpand ? 'calc(100vh - 65px)' : '0'
 })
 
 const treeData = computed(() => {
@@ -133,21 +138,16 @@ function nodeClick(node) {
 
 function handleBeautify() {
   content.value = JSON.stringify(JSON.parse(content.value), null, 4)
+  // 调用 Monaco Editor 的格式化功能
+  if (RefMonacoEditor.value) {
+    RefMonacoEditor.value.format()
+  }
 }
 
 init()
 </script>
 
 <style>
-.c-input {
-  width: 100%;
-  /* height: 100vh; */
-  border: 1px solid #eeeeee;
-}
-.c-input textarea {
-  height: calc(100vh - 65px) !important;
-  min-height: inherit;
-}
 .page-split {
   overflow: hidden;
 }
