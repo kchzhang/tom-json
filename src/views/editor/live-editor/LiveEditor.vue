@@ -84,13 +84,13 @@ const editorLanguage = computed(() => {
 const treeData = computed(() => {
   let json = {}
   try {
-    const contentStr = content.value
-    if (isYamlFormat(contentStr)) {
-      json = yamlToJson(contentStr)
-    } else if (isPropertiesFormat(contentStr)) {
-      json = propertiesToJson(contentStr)
+    const contentValue = content.value
+    if (isYamlFormat(contentValue)) {
+      json = yamlToJson(contentValue)
+    } else if (isPropertiesFormat(contentValue)) {
+      json = propertiesToJson(contentValue)
     } else {
-      json = JSON.parse(contentStr)
+      json = JSON.parse(contentValue)
     }
   } catch (error) {
     console.log(error)
@@ -119,35 +119,52 @@ async function init() {
 
   // 如果是 yaml 或 properties 格式，先转换为 JSON
   if (isYamlFormat(content.value)) {
-    const jsonObj = yamlToJson(content.value)
-    // YAML 格式：包装在 root 对象中，确保层级结构清晰
-    const wrappedJson = { root: jsonObj }
-    contentToParse = JSON.stringify(wrappedJson, null, 2)
+    try {
+      const jsonObj = yamlToJson(content.value)
+      // YAML 格式：包装在 root 对象中，确保层级结构清晰
+      const wrappedJson = { root: jsonObj }
+      contentToParse = JSON.stringify(wrappedJson, null, 2)
+    } catch (error) {
+      console.error('YAML 解析或包装失败:', error)
+      // 如果 YAML 解析失败，作为纯文本处理
+      contentToParse = JSON.stringify({ text: content.value }, null, 2)
+    }
   } else if (isPropertiesFormat(content.value)) {
-    const jsonObj = propertiesToJson(content.value)
-    // Properties 格式：包装在 root 对象中，确保层级结构清晰
-    const wrappedJson = { root: jsonObj }
-    contentToParse = JSON.stringify(wrappedJson, null, 2)
+    try {
+      const jsonObj = propertiesToJson(content.value)
+      // Properties 格式：包装在 root 对象中，确保层级结构清晰
+      const wrappedJson = { root: jsonObj }
+      contentToParse = JSON.stringify(wrappedJson, null, 2)
+    } catch (error) {
+      console.error('Properties 解析或包装失败:', error)
+      contentToParse = JSON.stringify({ text: content.value }, null, 2)
+    }
   } else {
-    // JSON 格式，直接使用（如果是多个顶层属性，也需要包装）
-    const parsed = JSON.parse(content.value)
-    // 检查 JSON 是否有多个顶层属性，如果是，也需要包装在 root 中
-    if (typeof parsed === 'object' && !Array.isArray(parsed)) {
-      const keys = Object.keys(parsed)
-      if (keys.length > 1) {
-        // 多个顶层属性，包装在 root 中以保持层级清晰
+    // JSON 格式，直接使用（如果是多个顶层属性，也需要包装在 root 中）
+    try {
+      const parsed = JSON.parse(content.value)
+      // 检查 JSON 是否有多个顶层属性，如果是，也需要包装在 root 中
+      if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+        const keys = Object.keys(parsed)
+        if (keys.length > 1) {
+          // 多个顶层属性，包装在 root 中以保持层级清晰
+          const wrappedJson = { root: parsed }
+          contentToParse = JSON.stringify(wrappedJson, null, 2)
+        } else {
+          // 单个顶层属性，直接使用
+          contentToParse = content.value
+        }
+      } else if (Array.isArray(parsed)) {
+        // 顶层是数组，包装在 root 中
         const wrappedJson = { root: parsed }
         contentToParse = JSON.stringify(wrappedJson, null, 2)
       } else {
-        // 单个顶层属性，直接使用
         contentToParse = content.value
       }
-    } else if (Array.isArray(parsed)) {
-      // 顶层是数组，包装在 root 中
-      const wrappedJson = { root: parsed }
-      contentToParse = JSON.stringify(wrappedJson, null, 2)
-    } else {
-      contentToParse = content.value
+    } catch (error) {
+      console.error('JSON 解析失败:', error)
+      // 如果 JSON 解析失败，作为纯文本处理
+      contentToParse = JSON.stringify({ text: content.value }, null, 2)
     }
   }
 
