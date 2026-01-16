@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch, defineProps, defineEmits } from 'vue'
+import { ref, onMounted, watch, computed, defineProps, defineEmits } from 'vue'
 import * as monaco from 'monaco-editor'
 
 const props = defineProps({
@@ -17,6 +17,14 @@ const props = defineProps({
   }
 })
 
+// Monaco Editor 可能不支持 properties 语言，将其映射到 text
+const mappedLanguage = computed(() => {
+  if (props.language === 'properties') {
+    return 'plaintext'
+  }
+  return props.language
+})
+
 const emit = defineEmits(['update:modelValue', 'change'])
 
 const container = ref(null)
@@ -25,7 +33,7 @@ let editor = null
 onMounted(() => {
   editor = monaco.editor.create(container.value, {
     value: props.modelValue,
-    language: props.language,
+    language: mappedLanguage.value,
     theme: 'vs',
     minimap: { enabled: false },
     automaticLayout: true,

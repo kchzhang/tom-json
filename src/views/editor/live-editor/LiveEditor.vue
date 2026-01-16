@@ -12,7 +12,7 @@
       <MonacoEditor
         ref="RefMonacoEditor"
         v-model="content"
-        language="json"
+        :language="editorLanguage"
         :height="editorHeight"
         @change="changeContent"
       />
@@ -29,7 +29,7 @@ import { ref, h, computed } from 'vue'
 import { CustomFlow, CustomItem } from '@/components/flow'
 import { CustomTree } from '@/components/tree'
 import PageSplit from 'vue3-page-split'
-import { parser, elkLayout } from '@/utils'
+import { parser, elkLayout, isPropertiesFormat, propertiesToJson } from '@/utils'
 import MonacoEditor from '@/components/editors/MonacoEditor.vue'
 import 'vue3-page-split/dist/style.css'
 
@@ -71,10 +71,20 @@ const editorHeight = computed(() => {
   return props.isExpand ? 'calc(100vh - 65px)' : '0'
 })
 
+// 检测当前格式
+const editorLanguage = computed(() => {
+  return isPropertiesFormat(content.value) ? 'properties' : 'json'
+})
+
 const treeData = computed(() => {
   let json = {}
   try {
-    json = JSON.parse(content.value)
+    const contentStr = content.value
+    if (isPropertiesFormat(contentStr)) {
+      json = propertiesToJson(contentStr)
+    } else {
+      json = JSON.parse(contentStr)
+    }
   } catch (error) {
     console.log(error)
   }
@@ -98,7 +108,16 @@ const content = ref(
 )
 
 async function init() {
-  const { nodes, edges } = parser(content.value)
+  let contentToParse = content.value
+  
+  // 如果是 properties 格式，先转换为 JSON 并包装在 root 对象中
+  if (isPropertiesFormat(content.value)) {
+    const jsonObj = propertiesToJson(content.value)
+    const wrappedJson = { root: jsonObj }
+    contentToParse = JSON.stringify(wrappedJson, null, 2)
+  }
+  
+  const { nodes, edges } = parser(contentToParse)
   const res = await elkLayout(nodes, edges, {
     // 方向
     'elk.direction': 'RIGHT'
@@ -137,10 +156,22 @@ function nodeClick(node) {
 }
 
 function handleBeautify() {
-  content.value = JSON.stringify(JSON.parse(content.value), null, 4)
-  // 调用 Monaco Editor 的格式化功能
-  if (RefMonacoEditor.value) {
-    RefMonacoEditor.value.format()
+  try {
+    if (isPropertiesFormat(content.value)) {
+      // Properties 格式：转换为 JSON 格式化
+      const jsonObj = propertiesToJson(content.value)
+      const formattedJson = JSON.stringify(jsonObj, null, 2)
+      content.value = formattedJson
+    } else {
+      // JSON 格式
+      content.value = JSON.stringify(JSON.parse(content.value), null, 4)
+    }
+    // 调用 Monaco Editor 的格式化功能
+    if (RefMonacoEditor.value) {
+      RefMonacoEditor.value.format()
+    }
+  } catch (error) {
+    console.error('格式化失败:', error)
   }
 }
 
