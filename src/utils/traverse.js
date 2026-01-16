@@ -88,7 +88,17 @@ function handleHasChildren(type, states, graph, children, myParentId, parentType
             }
         }
 
-        parentId = addNodeToGraph({ graph, type, text: states.parentName });
+        // 为数组和对象创建显式的容器节点，数组显示为 "key[]"，对象显示为 "key{}"
+        const nodeType = type;
+        let nodeText = states.parentName;
+        
+        if (type === "array") {
+            nodeText = `${states.parentName}[]`;
+        } else if (type === "object") {
+            nodeText = `${states.parentName}{}`;
+        }
+        
+        parentId = addNodeToGraph({ graph, type: nodeType, text: nodeText });
         states.bracketOpen.push({ id: parentId, type });
         states.parentName = "";
 

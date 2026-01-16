@@ -61,6 +61,12 @@ const dataTypeArrClass = computed(() => {
   }
 })
 
+function cleanText(text) {
+  if (!text) return text
+  // 去掉 [] 和 {} 标识符
+  return text.replace(/\[\]$/, '').replace(/\{\}$/, '')
+}
+
 const isShowOpenIcon = computed(() => {
   return (item) => {
     return isArray(item.data.type) && !hidden.value
@@ -85,7 +91,7 @@ function handleUpdate() {
 
 <template>
   <template v-if="isString(data.text)">
-    <div :class="dataTypeArrClass" :title="data.text">{{ data.text }}</div>
+    <div :class="dataTypeArrClass" :title="cleanText(data.text)">{{ data.text }}</div>
     <IconShow v-if="isShowOpenIcon(data)" class="icon-show" @click="toggle(true)" />
     <IconHidden v-if="isShowCloseIcon(data)" class="icon-show" @click="toggle(false)" />
   </template>
@@ -133,9 +139,21 @@ function handleUpdate() {
   color: #ff6b00;
   padding-right: 24px;
   font-size: 14px;
+  font-weight: 600;
+  border: 2px solid #ff6b0033;
+  border-radius: 6px;
+  background-color: #ff6b0011;
+  padding: 8px 12px;
+  margin: 4px 0;
 }
 .is-object {
   color: #761cea;
+  font-weight: 600;
+  border: 2px solid #761cea33;
+  border-radius: 6px;
+  background-color: #761cea11;
+  padding: 8px 12px;
+  margin: 4px 0;
 }
 .icon-show {
   position: absolute;
