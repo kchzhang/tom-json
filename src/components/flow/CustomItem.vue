@@ -85,12 +85,12 @@ function handleUpdate() {
 
 <template>
   <template v-if="isString(data.text)">
-    <div :class="dataTypeArrClass">{{ data.text }}</div>
+    <div :class="dataTypeArrClass" :title="data.text">{{ data.text }}</div>
     <IconShow v-if="isShowOpenIcon(data)" class="icon-show" @click="toggle(true)" />
     <IconHidden v-if="isShowCloseIcon(data)" class="icon-show" @click="toggle(false)" />
   </template>
   <template v-else>
-    <span :class="dataTypeClass(item[1])" v-for="(item, index) in data.text" :key="index">
+    <span :class="dataTypeClass(item[1])" v-for="(item, index) in data.text" :key="index" :title="`${item[0]}: ${item[1]}`">
       <CustomKey :itemKey="item[0]" :itemValue="item[1]" />
     </span>
   </template>
